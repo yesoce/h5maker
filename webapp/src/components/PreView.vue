@@ -17,6 +17,10 @@
                     @blur="saveDescription"
                     placeholder="请输入描述"
                     type="textarea"></el-input>
+          <el-input class="input"
+                    v-model="wechatAccount"
+                    @blur="saveWechatAccount"
+                    placeholder="微信号"></el-input>
         </div>
         <div class="qrcode">
           <div class="label">手机扫码分享给好友</div>
@@ -114,7 +118,7 @@
       }
       .link {
         width:100%;
-        overflow: scroll;
+        overflow: auto;
         .link-title {
           margin: 10px 0;
         }
@@ -122,7 +126,7 @@
           width: 280px;
           line-height: 36px;
           margin-right: 10px;
-          overflow: scroll;
+          overflow: auto;
           float: left;
           input {
             border: 0;
@@ -162,6 +166,7 @@ export default {
       releaseUrl: appConst.BACKEND_DOMAIN + '/pages/' + this.itemId + '.html',
       title: this.$store.state.editor.editorTheme.title || '',
       description: this.$store.state.editor.editorTheme.description || '',
+      wechatAccount: this.$store.state.editor.editorTheme.wechatAccount || '',
       qrcodeSize: 500
     }
   },
@@ -196,8 +201,12 @@ export default {
       if (this.description === this.$store.state.editor.editorTheme.description) return
       this.save()
     },
+    saveWechatAccount () {
+      if (this.wechatAccount === this.$store.state.editor.editorTheme.wechatAccount) return
+      this.save()
+    },
     save () {
-      this.$store.commit('UPDATE_THEME_DES', {title: this.title, description: this.description})
+      this.$store.commit('UPDATE_THEME_DES', {title: this.title, description: this.description, wechatAccount: this.wechatAccount})
       this.$store.dispatch('saveTheme', tools.vue2json(this.$store.state.editor.editorTheme)).then(() => {
         this.$message({
           message: '保存成功',

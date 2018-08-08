@@ -55,7 +55,7 @@
       }
     },
     mounted () {
-      this.$store.dispatch('getUserThemeList', 'spa')
+      this.$store.dispatch('getUserThemeList', 'page')
     },
     methods: {
       toEditor (item) {
@@ -82,7 +82,7 @@
         })
       },
       create () {
-        this.$store.dispatch('createTheme', 'spa')
+        this.$store.dispatch('createTheme', 'page')
         this.$store.dispatch('addPage')
         let $this = this
         this.$store.dispatch('saveTheme', tools.vue2json(this.$store.state.editor.editorTheme)).then(() => {

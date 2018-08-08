@@ -2,55 +2,54 @@
   <div class="editor">
     <HeaderEdit :goback="dialogSave" @saveThemeSuccess="showPreView=true"/>
     <section class="section">
-      <Overview class="overview" />
+      <!-- <Overview class="overview" /> -->
       <div class="canvas-wrap" id="canvas-wrap">
-        <Page :elements="editorPage.elements" :editorElement="element" :selectedElement="selectedElement" :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px' }" />
+        <!-- <Page :elements="editorPage.elements" :editorElement="element" :selectedElement="selectedElement" :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px' }" /> -->
         <!--<div class="tool-bar" :style="{top: parseInt(canvasHeight) + 35 + 'px'}">在右侧设置界面调整页面高度</div>-->
+        <UEditor style="height:600px" :ueditorConfig="editorConfig" @ready="onEditorReady"></UEditor>
       </div>
       <div class="control-panel">
         <div class="funcs">
-          <el-tooltip  effect="dark" content="新建文本" placement="left">
+          <!-- <el-tooltip  effect="dark" content="新建文本" placement="left">
             <button class="func el-icon-edit" @click="togglePanel(1)" :class="{ active: panelState === 1 }"></button>
           </el-tooltip>
           <el-tooltip  effect="dark" content="新建素材" placement="left">
-            <button class="func el-icon-picture" @click="togglePanel(2)":class="{ active: panelState === 2 }"></button>
+            <button class="func el-icon-picture" @click="togglePanel(2)" :class="{ active: panelState === 2 }"></button>
           </el-tooltip>
           <el-tooltip  effect="dark" content="播放动画" placement="left">
             <button class="func el-icon-caret-right" @click="playAnimate"></button>
-          </el-tooltip>
+          </el-tooltip> -->
           <el-tooltip  effect="dark" content="保存" placement="left">
             <button class="func el-icon-upload" @click="save"></button>
           </el-tooltip>
         </div>
-        <div class="wrapper custom-scrollbar">
-          <!-- 设置背景 0 -->
-        <div class="panel panel-bg">
-          <div class="clearfix"
-              v-if="panelTabState !== 1">
-            <el-button class="btn"
-                      type="success"
-                      @click="panelTabState = 1">更换背景</el-button>
-            <el-button class="btn"
-                      type="danger"
-                      @click="cleanBG">移除背景</el-button>
+        <!-- <div class="wrapper custom-scrollbar">
+          <div class="panel panel-bg">
+            <div class="clearfix"
+                v-if="panelTabState !== 1">
+              <el-button class="btn"
+                        type="success"
+                        @click="panelTabState = 1">更换背景</el-button>
+              <el-button class="btn"
+                        type="danger"
+                        @click="cleanBG">移除背景</el-button>
+            </div>
+            <div class="clearfix"
+                v-if="panelTabState === 1">
+              <ImgPanel :selectedImg="addBG"/>
+            </div>
           </div>
-          <div class="clearfix"
-              v-if="panelTabState === 1">
-            <ImgPanel :selectedImg="addBG"/>
-          </div>
-        </div>
-          <!-- 添加文字 1 -->
-          <div class="panel panel-text" v-if="panelState === 1">
-            <div class="btn" @click="addTextElement('title')" style="font-size: 32px; font-weight: bold;">插入标题</div>
-            <div class="btn" @click="addTextElement('plain')">插入文本</div>
-          </div>
-          <!-- 添加元素 2 -->
-          <div class="panel panel-element clearfix" v-if="panelState === 2">
-            <ImgPanel :selectedImg="addPicElement"/>
-          </div>
-          <!-- 图层编辑面板 -->
-          <EditPanel :element="element" :panelState="panelState" v-if="panelState > 10"/>
-        </div>
+
+            <div class="panel panel-text" v-if="panelState === 1">
+              <div class="btn" @click="addTextElement('title')" style="font-size: 32px; font-weight: bold;">插入标题</div>
+              <div class="btn" @click="addTextElement('plain')">插入文本</div>
+            </div>
+
+            <div class="panel panel-element clearfix" v-if="panelState === 2">
+              <ImgPanel :selectedImg="addPicElement"/>
+            </div>
+            <EditPanel :element="element" :panelState="panelState" v-if="panelState > 10"/>
+        </div> -->
       </div>
     </section>
     <PreView :itemId="itemId" @hideView="showPreView=false" v-if="showPreView"/>
@@ -68,6 +67,7 @@
   import SvgPanel from '../../components/SvgPanel'
   import ImgPanel from '../../components/ImgPanel'
   import appConst from '../../util/appConst'
+  import UEditor from '../../components/UEditor'
   export default {
     data () {
       return {
@@ -81,7 +81,11 @@
         releaseUrl: '',
         showPreView: false,
         isLoadingPreview: false,
-        panelTabState: 0
+        panelTabState: 0,
+        editorConfig: {
+          autoFloatEnabled: false,
+          autoHeightEnabled: false
+        }
       }
     },
     watch: {
@@ -211,10 +215,20 @@
       },
       togglePanel (code) {
         this.panelState = code
+      },
+      onEditorReady (editorInstance) {
+        this.editor = editorInstance
+        if (this.$store.state.editor.editorTheme.pages[0] && this.$store.state.editor.editorTheme.pages[0].content) {
+          editorInstance.setContent(this.$store.state.editor.editorTheme.pages[0].content)
+        }
+        editorInstance.addListener('contentChange', () => {
+          this.$store.dispatch('updateContent', editorInstance.getContent())
+          // console.log('编辑器内容发生了变化：', editorInstance.getContent());
+        })
       }
     },
     components: {
-      Overview, Page, PicPicker, appConst, PreView, HeaderEdit, EditPanel, SvgPanel, ImgPanel
+      Overview, Page, PicPicker, appConst, PreView, HeaderEdit, EditPanel, SvgPanel, ImgPanel, UEditor
     },
     mounted () {
       this.itemId = this.$route.query.itemId

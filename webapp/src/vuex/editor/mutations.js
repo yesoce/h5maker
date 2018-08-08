@@ -9,6 +9,9 @@ const mutations = {
   [types.ADD_PIC_ELEMENT] (state, data) {
     state.editorPage.elements.push(new Element(data))
   },
+  [types.UPDATE_CONTENT] (state, data) {
+    state.editorPage.content = data
+  },
   [types.SET_BG_ELEMENT] (state, data) {
     let haveBG = false
     state.editorPage.elements.findIndex((value, index, arr) => {
@@ -73,10 +76,11 @@ const mutations = {
   [types.SET_CUR_EDITOR_THEME] (state, data) {
     state.editorTheme = data
   },
-  [types.UPDATE_THEME_DES] (state, {title, description, canvasHeight}) {
+  [types.UPDATE_THEME_DES] (state, {title, description, canvasHeight, wechatAccount}) {
     state.editorTheme.title = title
     state.editorTheme.description = description
     state.editorTheme.canvasHeight = canvasHeight
+    state.editorTheme.wechatAccount = wechatAccount
   },
   [types.DELETE_ELEMENT] (state, data) {
     state.editorPage.elements.findIndex((value, index, arr) => {

@@ -11,11 +11,12 @@ var PageSchema = new mongoose.Schema({
   },
   title: String,
   description: String,
+  wechatAccount: String,
   html: String,
   createDate: { type: Number, default: new Date().getTime() },
   loginId: String,
   type: {
-    type: String, required: true, default: 'h5', enum: ['h5', 'spa'] // 页面是单页还是多页
+    type: String, required: true, default: 'page', enum: ['h5', 'spa', 'page'] // 页面是单页还是多页
   },
   canvasHeight: Number
 })

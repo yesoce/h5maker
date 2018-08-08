@@ -80,6 +80,17 @@ export const addElement = ({commit, state}, data) => {
 }
 
 /**
+ * 更新页面内容
+ */
+export const updateContent = ({commit, state}, data) => {
+  commit(types.UPDATE_CONTENT, data)
+  // var list = state.editorPage.elements
+  // var lastIndex = list.length - 1
+  // list[lastIndex]['zindex'] = lastIndex ? list[lastIndex - 1]['zindex'] + 1 : 1
+  // commit(types.SET_CUR_EDITOR_ELEMENT, state.editorPage.elements[lastIndex])
+}
+
+/**
  * 添加背景图片
  */
 export const addBGElement = ({commit}, data) => {
